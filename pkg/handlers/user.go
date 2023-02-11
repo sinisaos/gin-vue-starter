@@ -16,6 +16,16 @@ type Handler struct {
 	DB *gorm.DB
 }
 
+// Register User godoc
+//
+//	@Summary		Register User
+//	@Description	Add a new User
+//	@Tags			Accounts
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.UserRegister	true	"User Data"
+//	@Success		200		{object}	models.User
+//	@Router			/accounts/register [post]
 func (h *Handler) Register(c *gin.Context) {
 
 	var userData models.UserRegister
@@ -45,6 +55,16 @@ func (h *Handler) Register(c *gin.Context) {
 	}
 }
 
+// Login user godoc
+//
+//	@Summary		Login User
+//	@Description	Login for User
+//	@Tags			Accounts
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.UserLogin	true	"User Data"
+//	@Success		200		{object}	models.UserLogin
+//	@Router			/accounts/login [post]
 func (h *Handler) Login(c *gin.Context) {
 
 	var userData models.UserLogin
@@ -78,12 +98,36 @@ func (h *Handler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"access_token": token})
 }
 
+// Logout user godoc
+//
+//	@Summary		User logout
+//	@Description	User logout
+//	@Tags			Accounts
+//	@Accept			json
+//	@Produce		json
+//	@Success		200
+//	@in				header
+//	@name			Authorization
+//	@Security		BearerAuth
+//	@Router			/accounts/logout [post]
 func (h *Handler) Logout(c *gin.Context) {
 	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
 
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
 
+// Delete user godoc
+//
+//	@Summary		User delete
+//	@Description	User delete
+//	@Tags			Accounts
+//	@Accept			json
+//	@Produce		json
+//	@Success		204
+//	@in				header
+//	@name			Authorization
+//	@Security		BearerAuth
+//	@Router			/accounts/delete [delete]
 func (h *Handler) DeleteUser(c *gin.Context) {
 	err := utils.ValidateToken(c)
 
@@ -106,6 +150,18 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 	}
 }
 
+// User profile godoc
+//
+//	@Summary		User profile
+//	@Description	User profile
+//	@Tags			Accounts
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	models.User
+//	@in				header
+//	@name			Authorization
+//	@Security		BearerAuth
+//	@Router			/accounts/profile [get]
 func (h *Handler) Profile(c *gin.Context) {
 	var user models.User
 	err := utils.ValidateToken(c)
