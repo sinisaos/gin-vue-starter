@@ -17,7 +17,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	accountRouter.POST("/login", h.Login)
 	accountRouter.POST("/logout", h.Logout)
 	authorizedAccountRouter := r.Group("/accounts")
-	authorizedAccountRouter.Use(middleware.JwtAuthMiddleware())
+	authorizedAccountRouter.Use(middleware.AuthMiddleware())
 	authorizedAccountRouter.GET("/profile", h.Profile)
 	authorizedAccountRouter.DELETE("/delete", h.DeleteUser)
 
@@ -25,7 +25,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	taskRouter.GET("/", h.AllTasks)
 	taskRouter.GET("/:id", h.SingleTask)
 	authorizedTaskRouter := r.Group("/tasks")
-	authorizedTaskRouter.Use(middleware.JwtAuthMiddleware())
+	authorizedTaskRouter.Use(middleware.AuthMiddleware())
 	authorizedTaskRouter.POST("/", h.CreateTask)
 	authorizedTaskRouter.PATCH("/:id", h.UpdateTask)
 	authorizedTaskRouter.DELETE("/:id", h.DeleteTask)

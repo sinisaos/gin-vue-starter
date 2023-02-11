@@ -7,7 +7,7 @@ import (
 	"github.com/sinisaos/gin-vue-starter/pkg/utils"
 )
 
-func JwtAuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		err := utils.ValidateToken(c)
