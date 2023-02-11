@@ -36,12 +36,130 @@ definitions:
       username:
         type: string
     type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.UserRegister:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      passwordConfirm:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - passwordConfirm
+    - username
+    type: object
 info:
   contact: {}
   description: Gin Vue starter project.
   title: Gin Vue starter API
   version: "1.0"
 paths:
+  /accounts/delete:
+    delete:
+      consumes:
+      - application/json
+      description: User delete
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: User delete
+      tags:
+      - Accounts
+  /accounts/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserLogin'
+      summary: Login User
+      tags:
+      - Accounts
+  /accounts/logout:
+    post:
+      consumes:
+      - application/json
+      description: User logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      summary: User logout
+      tags:
+      - Accounts
+  /accounts/profile:
+    get:
+      consumes:
+      - application/json
+      description: User profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - BearerAuth: []
+      summary: User profile
+      tags:
+      - Accounts
+  /accounts/register:
+    post:
+      consumes:
+      - application/json
+      description: Add a new User
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Register User
+      tags:
+      - Accounts
   /tasks:
     get:
       description: Show all tasks.

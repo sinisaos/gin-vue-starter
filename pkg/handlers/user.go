@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/sinisaos/gin-vue-starter/pkg/models"
 	"github.com/sinisaos/gin-vue-starter/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
@@ -58,7 +58,7 @@ func (h *Handler) Register(c *gin.Context) {
 // Login user godoc
 //
 //	@Summary		Login User
-//	@Description	Login for User
+//	@Description	Login User
 //	@Tags			Accounts
 //	@Accept			json
 //	@Produce		json
@@ -91,7 +91,7 @@ func (h *Handler) Login(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	// store token in HttpOnly cookie
+
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("access_token", "Bearer "+token, 3600, "/", "localhost", false, true)
 
@@ -116,7 +116,7 @@ func (h *Handler) Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
 
-// Delete user godoc
+// User delete godoc
 //
 //	@Summary		User delete
 //	@Description	User delete
@@ -180,7 +180,9 @@ func (h *Handler) Profile(c *gin.Context) {
 
 	userID := claims["id"]
 
-	if err := h.DB.Delete(&models.User{}, userID).Error; err != nil {
+	if err := h.DB.Where("id=?", userID).Preload("Task", func(tx *gorm.DB) *gorm.DB {
+		return tx.Order("id DESC")
+	}).First(&user).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found!"})
 		return
 	} else {
