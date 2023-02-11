@@ -49,6 +49,16 @@ func (h *Handler) AllTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": tasks, "page": page})
 }
 
+// SingleTask godoc
+//
+//	@Summary		Single Task
+//	@Description	Show single Task.
+//	@Tags			Task
+//	@Produce		json
+//	@Param			id	path		string	true	"id"
+//	@Success		200	{object}	models.Task
+//	@Failure		404	{string}	string	"Record not found!"
+//	@Router			/tasks/{id} [get]
 func (h *Handler) SingleTask(c *gin.Context) {
 	ID := c.Param("id")
 	var task models.Task
@@ -91,6 +101,21 @@ func (h *Handler) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": task})
 }
 
+// UpdateTask godoc
+//
+//	@Summary		Update Task
+//	@Description	Update single Task.
+//	@Tags			Task
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string				true	"id"
+//	@Param			body	body		models.TaskValidate	true	"body"
+//	@Success		200		{object}	models.Task
+//	@Failure		404		{string}	string	"Record not found!"
+//	@in				header
+//	@name			Authorization
+//	@Security		BearerAuth
+//	@Router			/tasks/{id} [patch]
 func (h *Handler) UpdateTask(c *gin.Context) {
 	ID := c.Param("id")
 	var task models.Task
@@ -98,11 +123,13 @@ func (h *Handler) UpdateTask(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
+
 	var taskData models.TaskValidate
 	if err := c.ShouldBindJSON(&taskData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	h.DB.Model(&task).Where("id = ?", ID).Updates(models.Task{
 		Name:      taskData.Name,
 		Completed: taskData.Completed,
@@ -111,6 +138,18 @@ func (h *Handler) UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": task})
 }
 
+// DeleteTask godoc
+//
+//	@Summary		Delete Task
+//	@Description	Delete single Task.
+//	@Tags			Task
+//	@Param			id	path	string	true	"id"
+//	@Success		204
+//	@Failure		404	{string}	string	"Record not found!"
+//	@in				header
+//	@name			Authorization
+//	@Security		BearerAuth
+//	@Router			/tasks/{id} [delete]
 func (h *Handler) DeleteTask(c *gin.Context) {
 	ID := c.Param("id")
 	var task models.Task
