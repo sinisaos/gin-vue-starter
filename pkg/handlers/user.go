@@ -71,7 +71,7 @@ func (h *Handler) Login(c *gin.Context) {
 	if err != nil {
 		return
 	}
-
+	// store token in HttpOnly cookie
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("access_token", "Bearer "+token, 3600, "/", "localhost", false, true)
 
@@ -102,7 +102,7 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 	userID := claims["id"].(float64)
 
 	if err := h.DB.Select("Task").Delete(&models.User{ID: uint64(userID)}).Error; err != nil {
-		c.JSON(http.StatusNoContent, nil)
+		c.Status(http.StatusNoContent)
 	}
 }
 
