@@ -106,9 +106,6 @@ func (h *Handler) Login(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200
-//	@in				header
-//	@name			Authorization
-//	@Security		BearerAuth
 //	@Router			/accounts/logout [post]
 func (h *Handler) Logout(c *gin.Context) {
 	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
