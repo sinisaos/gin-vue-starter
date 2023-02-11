@@ -1,0 +1,296 @@
+definitions:
+  models.Task:
+    properties:
+      completed:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+    type: object
+  models.TaskValidate:
+    properties:
+      completed:
+        type: boolean
+      name:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - name
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+      username:
+        type: string
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.UserRegister:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      passwordConfirm:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - passwordConfirm
+    - username
+    type: object
+info:
+  contact: {}
+  description: Gin Vue starter project.
+  title: Gin Vue starter API
+  version: "1.0"
+paths:
+  /accounts/delete:
+    delete:
+      consumes:
+      - application/json
+      description: User delete
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: User delete
+      tags:
+      - Accounts
+  /accounts/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserLogin'
+      summary: Login User
+      tags:
+      - Accounts
+  /accounts/logout:
+    post:
+      consumes:
+      - application/json
+      description: User logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - BearerAuth: []
+      summary: User logout
+      tags:
+      - Accounts
+  /accounts/profile:
+    get:
+      consumes:
+      - application/json
+      description: User profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - BearerAuth: []
+      summary: User profile
+      tags:
+      - Accounts
+  /accounts/register:
+    post:
+      consumes:
+      - application/json
+      description: Add a new User
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Register User
+      tags:
+      - Accounts
+  /tasks:
+    get:
+      description: Show all tasks.
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: page_size
+        in: query
+        name: page_size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/models.Task'
+              type: array
+            type: array
+      summary: List tasks
+      tags:
+      - Task
+    post:
+      consumes:
+      - application/json
+      description: Create a new Task.
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskValidate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Task'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Task
+      tags:
+      - Task
+  /tasks/{id}:
+    delete:
+      description: Delete single Task.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Record not found!
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Task
+      tags:
+      - Task
+    get:
+      description: Show single Task.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Task'
+        "404":
+          description: Record not found!
+          schema:
+            type: string
+      summary: Single Task
+      tags:
+      - Task
+    patch:
+      consumes:
+      - application/json
+      description: Update single Task.
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskValidate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Task'
+        "404":
+          description: Record not found!
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Task
+      tags:
+      - Task
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

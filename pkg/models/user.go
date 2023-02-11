@@ -9,6 +9,7 @@ type User struct {
 	UserName string `json:"username"`
 	Email    string `json:"email,omitempty" gorm:"unique"`
 	Password string `json:"-" gorm:"size:255;not null"`
+	Task     []Task `json:"tasks,omitempty" gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 type UserRegister struct {
