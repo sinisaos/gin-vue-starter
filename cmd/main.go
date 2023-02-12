@@ -9,6 +9,7 @@ import (
 
 	"github.com/sinisaos/gin-vue-starter/api/docs"
 	"github.com/sinisaos/gin-vue-starter/pkg/config/db"
+	"github.com/sinisaos/gin-vue-starter/pkg/middleware"
 	"github.com/sinisaos/gin-vue-starter/pkg/routers"
 
 	swaggerfiles "github.com/swaggo/files"
@@ -30,6 +31,7 @@ func main() {
 	router := gin.Default()
 	handler := db.InitDB(os.Getenv("DSN"))
 
+	router.Use(middleware.CORSMiddleware())
 	routers.RegisterRoutes(router, handler)
 
 	docs.SwaggerInfo.BasePath = "/"

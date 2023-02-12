@@ -48,7 +48,10 @@ func (h *Handler) Register(c *gin.Context) {
 	user.HashPassword()
 
 	if err := h.DB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "User already exists."})
+		// It should be status 422 (http.StatusUnprocessableEntity) or 409 Conflict
+		// but in that case the Axios response is undefined and we can't handle the error
+		// if user alredy exists. With curl and swagger docs response is ok.
+		c.JSON(http.StatusOK, gin.H{"error": "User already exists."})
 		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{"message": "User created"})
@@ -106,9 +109,6 @@ func (h *Handler) Login(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200
-//	@in				header
-//	@name			Authorization
-//	@Security		BearerAuth
 //	@Router			/accounts/logout [post]
 func (h *Handler) Logout(c *gin.Context) {
 	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
