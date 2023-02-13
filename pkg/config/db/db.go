@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB(url string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(url), &gorm.Config{
+func InitDB(dsn string) *gorm.DB {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		PrepareStmt:            true,
 		SkipDefaultTransaction: true,
 	})
